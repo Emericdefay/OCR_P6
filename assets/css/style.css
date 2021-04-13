@@ -1,0 +1,22 @@
+img
+{
+    width: 10em;
+    height: auto;
+}
+
+.single-movie
+{
+    background: dimgrey;
+
+}
+
+.list
+{
+    background: dimgrey;
+}
+
+
+body
+{
+    background-color: grey;
+}
