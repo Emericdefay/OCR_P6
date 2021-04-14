@@ -1,8 +1,11 @@
 // url API
 const url = "http://localhost:8000/api/v1/titles/";
 
+// buttons:
+const pageBackButton = document.querySelector("#backArrow");
+
 // categories
-const bestMovie = "";
+const bestMovie = document.querySelector("#bestMovie");
 const bestMovies = document.querySelector("#bestMovies");
 const cat1 = document.querySelector("#cat1");
 const cat2 = document.querySelector("#cat2");
@@ -23,38 +26,61 @@ const boxOffice = document.querySelector("#worldwide_gross_income");
 const description = document.querySelector("#description");
 
 
-function createMoviePoster(category, movies){
-
-    const template = `
-    <section class="gallery">
-        ${movies.map((movie)=>
+function createMoviePoster(category, movies)
+{
+    /*
+     *
+     */
+    return `
+        ${
+        movies.map((movie)=>
             {
             return `
                 <img src=${movie.image_url} movie-id =${movie.id} onclick="newPage(${movie.id})"/>
-                
                    `;
             })                  
         }
-    </section>
     `;
-    return template;
 }
 
-function getPostersIndex(name, command){
-
+function getPostersIndex(name, command)
+{
+    /*
+     *
+     */
     const movieElement = document.createElement("div");
     movieElement.setAttribute("class", name);
 
-    const newUrl = url + command;
+    movieElement.innerHTML += `<section class="gallery">`;
+
+    let newUrl = url + command;
 
     fetch(newUrl)
         .then((res) => res.json())
-        .then((data)=> {movieElement.innerHTML = createMoviePoster(name, data.results);})
+        .then((data)=>
+        {
+            movieElement.innerHTML = createMoviePoster(name, data.results);
+        })
         .catch();
+
+    newUrl += "&page=2"
+
+    fetch(newUrl)
+        .then((res) => res.json())
+        .then((data)=>
+        {
+            movieElement.innerHTML += createMoviePoster(name, data.results.slice(0,2));
+        })
+        .catch();
+    movieElement.innerHTML += `</section>`;
+
     return movieElement;
 }
 
 function getImage(url){
+    /*
+     *
+     */
     const movieElement = document.createElement("div");
     movieElement.setAttribute("class", "image");
 
@@ -63,15 +89,16 @@ function getImage(url){
         .then((res)=>res.json())
         .then((data)=>
         {
-           console.log(data["id"]);
-           console.log(data["image_url"]);
            movieElement.innerHTML = `<img src=${data["image_url"]}/>`;
         });
-    console.log(movieElement);
     return movieElement;
 }
 
-function getDetails(url, command) {
+function getDetails(url, command)
+{
+    /*
+     *
+     */
     const movieElement = document.createElement("div");
     movieElement.setAttribute("class", command);
 
@@ -79,23 +106,30 @@ function getDetails(url, command) {
         .then((res)=>res.json())
         .then((data)=>
         {
-            console.log(data[command]);
-            movieElement.innerHTML = `<p>${data[`${command}`]}</p>`;
+            movieElement.innerHTML = `<p>${command} : ${data[`${command}`]}</p>`;
         });
     return movieElement;
 }
 
-function newPage(id_page){
+function newPage(id_page)
+{
+    /*
+     *
+     */
     window.open("page.html?"+id_page,"_top");
 }
 
-if (location.pathname.includes("/page.html")) {
-    window.onload = function (){
+if (location.pathname.includes("/page.html"))
+{
+    window.onload = function()
+    {
+        /*
+         *
+         */
 
         let address = document.location + "";
         const id = address.split("?").pop();
         const newUrl = url + id;
-        console.log(newUrl);
 
         // Fetch :
         const pageImage = getImage(newUrl);
@@ -111,8 +145,6 @@ if (location.pathname.includes("/page.html")) {
         const pageBoxOffice = getDetails(newUrl,"worldwide_gross_income");
         const pageDescription = getDetails(newUrl,"description");
 
-
-        console.log(pageImage);
         // AppendChild :
         image.appendChild(pageImage);
         title.appendChild(pageTitle);
@@ -127,11 +159,15 @@ if (location.pathname.includes("/page.html")) {
         boxOffice.appendChild(pageBoxOffice);
         description.appendChild(pageDescription);
     };
-
 }
 
-if (location.pathname.includes("/index.html")){
-    window.onload = function () {
+if (location.pathname.includes("/index.html"))
+{
+    window.onload = function()
+    {
+        /*
+         *
+         */
 
         // Fetch :
         const movieCatBestMovies = getPostersIndex("bestMovies", "?sort_by=-imdb_score");
@@ -146,4 +182,13 @@ if (location.pathname.includes("/index.html")){
         cat3.appendChild(movieCat3);
 
     };
+}
+
+pageBackButton.onclick = function()
+{
+    /*
+     *
+     */
+    window.open("index.html", "_top");
+
 }
