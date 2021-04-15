@@ -1,0 +1,50 @@
+$duration: 250ms;
+
+body
+{
+    margin: 5px;
+    background-color: #262626;
+
+    p
+    {
+        font-size: x-large;
+        color: #ffffff;
+        text-decoration: underline;
+
+    }
+
+    a
+    {
+        font-size: x-large;
+        color: #ffffff;
+    }
+}
+
+
+
+.slider
+{
+    width: 80%;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(5);
+    overflow: hidden;
+
+}
+
+    .slides
+    {
+        img
+        {
+            width: 20vh;
+            padding: 0 2px;
+            transition: $duration all;
+
+            &:hover
+            {
+                margin: 0 40px;
+                transform: scale(1.2);
+            }
+        }
+    }
+

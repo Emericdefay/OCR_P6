@@ -1,8 +1,7 @@
+//import "./modale"
+
 // url API
 const url = "http://localhost:8000/api/v1/titles/";
-
-// buttons:
-const pageBackButton = document.querySelector("#backArrow");
 
 // categories
 const bestMovie = document.querySelector("#bestMovie");
@@ -26,6 +25,110 @@ const boxOffice = document.querySelector("#worldwide_gross_income");
 const description = document.querySelector("#description");
 
 
+class SlideShow
+{
+    /**
+     * 
+     * @param {*} element 
+     * @param {*} options 
+     */
+    constructor(element, options = {})
+    {
+        this.element = element;
+        this.options = Object.assign({}, 
+            {
+            slidesToScroll: 1,
+            slidesVisible: 1
+            }, options)
+        //
+        let children = [].slice.call(element.children);
+        this.base = this.createDivWithClass("slideshow");
+        this.container = this.createDivWithClass("slideshow__container");
+        container.style.width = (ratio*100) +"%";
+        this.base.appendChild(this.container);
+        this.element.appendChild(base);
+        this.items = children.map((child) => {
+            let item = this.createDivWithClass("slideshow__item");
+            item.appendChild(child);
+            this.container.appendChild(item);
+            return item;
+        });
+        this.setStyle();
+        this.createArrow();
+    }
+
+    setStyle()
+    {
+
+    }
+
+    createArrow()
+    {
+
+    }
+
+    /**
+     * 
+     * @param {string} className 
+     * @returns {HTMLElement}
+     */
+    createDivWithClass(className)
+    {
+        let div = document.createElement('div');
+        div.setAttribute("class", className);
+        return div
+    }
+}
+
+showMovies();
+
+async function getData(url, name, start, range)
+{
+    return new Promise((resolve, reject) =>
+    { 
+        fetch(url)
+            .then((res) => res.json())
+            .then((data)=>
+            {
+                resolve(createMoviePoster(name, data.results.slice(start, range)));
+            });
+    })
+}
+
+async function getSplitData(url1, url2, name)
+{
+    let memorySplit =
+    {
+        pageOne:"",
+        pageTwo:""
+    }
+
+    return new Promise((resolve) =>
+    { 
+        fetch(url1)
+            .then((res) => res.json())
+            .then((data)=>
+            {
+                
+                const a = createMoviePoster(name, data.results.slice(2,6));
+                memorySplit.pageOne = a;
+            })
+            .then(
+                fetch(url2)
+                    .then((res) => res.json())
+                    
+                    .then((data)=>
+                    {
+                        const b = createMoviePoster(name, data.results.slice(0, 3));
+                        //console.log("test.")
+                        //console.log(memorySplit);
+                        memorySplit.pageTwo = b;
+                        console.log(memorySplit.pageTwo + memorySplit.pageOne);
+                        resolve(memorySplit.pageTwo + memorySplit.pageOne);
+                    }))
+    })
+}
+
 function createMoviePoster(category, movies)
 {
     /*
@@ -48,42 +151,56 @@ function getPostersIndex(name, command)
     /*
      *
      */
-    const movieElement = document.createElement("div");
-    movieElement.setAttribute("class", name);
+    let sliderElement = document.createElement("div");
+    sliderElement.setAttribute("class", "slider");
 
-    movieElement.innerHTML += `<section class="gallery">`;
-
+    let movieElement = document.createElement("div");
+    movieElement.setAttribute("class", "slides");
     let newUrl = url + command;
 
-    fetch(newUrl)
-        .then((res) => res.json())
-        .then((data)=>
-        {
-            movieElement.innerHTML = createMoviePoster(name, data.results);
-        })
-        .catch();
+    getData(newUrl, name, 0, 5).then(data => 
+    {
+        let s1 = `
+                    <section id="section1">
+                        <a href="#section2"> < </a>
+                            ${data}
+                        <a href="#section2"> > </a>
+                    </section>
+                 `;
+        movieElement.innerHTML = s1;
+        sliderElement.appendChild(movieElement);
+        
+    })
+    
+    //let memorySplit;
+    
+    //getSplitData(newUrl, newUrl + "&page=2", name).then(data =>
+    getData(newUrl+"&page=2", name, 0, 5).then(data => 
+    {
+        console.log("undef?");
+        console.log(data);
+        let s2 = `
+        <section id="section2">
+            <a href="#section1"> < </a>
+                ${data}
+            <a href="#section1"> > </a>
+        </section>
+        `;
+    movieElement.innerHTML += s2;
+    //sliderElement.appendChild(movieElement); 
+    })
+       
+    
 
-    newUrl += "&page=2"
-
-    fetch(newUrl)
-        .then((res) => res.json())
-        .then((data)=>
-        {
-            movieElement.innerHTML += createMoviePoster(name, data.results.slice(0,2));
-        })
-        .catch();
-    movieElement.innerHTML += `</section>`;
-
-    return movieElement;
+    return sliderElement;
 }
 
-function getImage(url){
+async function getImage(url){
     /*
      *
      */
     const movieElement = document.createElement("div");
     movieElement.setAttribute("class", "image");
-
 
     fetch(url)
         .then((res)=>res.json())
@@ -94,7 +211,7 @@ function getImage(url){
     return movieElement;
 }
 
-function getDetails(url, command)
+async function getDetails(url, command)
 {
     /*
      *
@@ -116,7 +233,7 @@ function newPage(id_page)
     /*
      *
      */
-    window.open("page.html?"+id_page,"_top");
+    window.open("page.html?"+id_page, "_top");
 }
 
 if (location.pathname.includes("/page.html"))
@@ -136,14 +253,14 @@ if (location.pathname.includes("/page.html"))
         const pageTitle = getDetails(newUrl, "title");
         const pageGenres = getDetails(newUrl, "genres");
         const pageReleased = getDetails(newUrl, "date_published");
-        const pageRated = getDetails(newUrl,"rated");
-        const pageImdb = getDetails(newUrl,"imdb_score");
-        const pageDirectors = getDetails(newUrl,"directors");
-        const pageActors = getDetails(newUrl,"actors");
-        const pageDuration = getDetails(newUrl,"duration");
-        const pageCountries = getDetails(newUrl,"countries");
-        const pageBoxOffice = getDetails(newUrl,"worldwide_gross_income");
-        const pageDescription = getDetails(newUrl,"description");
+        const pageRated = getDetails(newUrl, "rated");
+        const pageImdb = getDetails(newUrl, "imdb_score");
+        const pageDirectors = getDetails(newUrl, "directors");
+        const pageActors = getDetails(newUrl, "actors");
+        const pageDuration = getDetails(newUrl, "duration");
+        const pageCountries = getDetails(newUrl, "countries");
+        const pageBoxOffice = getDetails(newUrl, "worldwide_gross_income");
+        const pageDescription = getDetails(newUrl, "description");
 
         // AppendChild :
         image.appendChild(pageImage);
@@ -161,34 +278,22 @@ if (location.pathname.includes("/page.html"))
     };
 }
 
-if (location.pathname.includes("/index.html"))
-{
-    window.onload = function()
-    {
-        /*
-         *
-         */
-
-        // Fetch :
-        const movieCatBestMovies = getPostersIndex("bestMovies", "?sort_by=-imdb_score");
-        const movieCat1 = getPostersIndex("cat1", "?genre=Fantasy");
-        const movieCat2 = getPostersIndex("cat2", "?genre=Drama");
-        const movieCat3 = getPostersIndex("cat3", "?genre=Family");
-
-        // AppendChild :
-        bestMovies.appendChild(movieCatBestMovies);
-        cat1.appendChild(movieCat1);
-        cat2.appendChild(movieCat2);
-        cat3.appendChild(movieCat3);
-
-    };
-}
-
-pageBackButton.onclick = function()
+async function showMovies()
 {
     /*
-     *
-     */
-    window.open("index.html", "_top");
+        *
+        */
 
-}
+    // Fetch :
+    const movieCatBestMovies = getPostersIndex("bestMovies", "?sort_by=-imdb_score");
+    const movieCat1 = getPostersIndex("cat1", "?genre=Fantasy");
+    const movieCat2 = getPostersIndex("cat2", "?genre=Drama");
+    const movieCat3 = getPostersIndex("cat3", "?genre=Family");
+
+    // Get images :
+    bestMovies.appendChild(movieCatBestMovies);
+    cat1.appendChild(movieCat1);
+    cat2.appendChild(movieCat2);
+    cat3.appendChild(movieCat3);
+
+};

@@ -1,0 +1,38 @@
+body {
+  margin: 5px;
+  background-color: #262626;
+}
+
+body p {
+  font-size: x-large;
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+body a {
+  font-size: x-large;
+  color: #ffffff;
+}
+
+.slider {
+  width: 80%;
+  margin: 10px 0;
+  display: -ms-grid;
+  display: grid;
+  -ms-grid-columns: ()[5];
+      grid-template-columns: repeat(5);
+  overflow: hidden;
+}
+
+.slides img {
+  width: 20vh;
+  padding: 0 2px;
+  -webkit-transition: 250ms all;
+  transition: 250ms all;
+}
+
+.slides img:hover {
+  margin: 0 40px;
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
+}
