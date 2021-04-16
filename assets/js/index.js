@@ -1,7 +1,13 @@
-// url API
+/**
+ * 
+ * 
+ * 
+ */
+
+// Getting url of the API.
 const url = "http://localhost:8000/api/v1/titles/?";
 
-// categories
+// Create documents from the index.html squeleton.
 let bestMovie = document.querySelector("#bestMovie");
 let bestMovies = document.querySelector("#bestMovies");
 let cat1 = document.querySelector("#cat1");
@@ -10,8 +16,6 @@ let cat3 = document.querySelector("#cat3");
 
 start();
 
-
-////////////////////////////////////////////////////////////////
 
 /**
  * 
@@ -49,8 +53,6 @@ async function getInfo(url)
             </div>\
         </div>`;
 
-        //console.log(bodyHTML)
-
         return `<div \
                 class="carousel__slide">\
                     <a href="#${data.id}" \
@@ -82,7 +84,6 @@ async function createMoviePoster(movies, parent)
         })               
 }
 
-
 /**
  * 
  * @param {*} url 
@@ -98,9 +99,7 @@ async function getData(url, start, range)
                 .then((prom)=>
                 {   
                     return Promise.all(prom);
-                }); 
-                
-                 
+                });             
 }
 
 /**
@@ -114,8 +113,7 @@ async function getPostersIndex(command)
     const data = await getData(newUrl, 0, 6);
     newUrl += "&page=2";
     const data2 = await getData(newUrl, 0, 2);
-    const data3 = data.concat(data2);
-    return data3;
+    return data.concat(data2);
 }
 
 /**
@@ -125,42 +123,49 @@ async function getPostersIndex(command)
  */
 function createMovieInfo(movie)
 {
-    return `<div class="informations">\
-                <a href="#${movie.id}" \
-                data-target="#${movie.id}" \
-                data-toggle="modal"> \
-                    <img\
-                    src=${movie.image_url} \
-                    class="bigPoster" \
-                    >\
-                </a> \
-                <p class="title">${movie.title}</p>\
-                    <div>\
-                        <p class="desc">${movie.description}</p>\
-                    </div>\
-            </div>\
 
-            <div \
-            id="${movie.id}" \
-            class="modal">\
-                <div \
-                class="modal__content" \
-                style="background-image: url(${movie.image_url});
-                        background-size:cover;">\
-                    <h1>${movie.title}</h1>\
-                    <p>Genre : ${movie.genre}</p>\
-                    <p>Date released : ${movie.date_published}</p>\
-                    <p>Rate : "${movie.rated}"</p>\
-                    <p>IMDB Score : "${movie.imdb_score}"</p>\
-                    <p>Directors : "${movie.directors}"</p>\
-                    <p>Actors : "${movie.actors}"</p>\
-                    <p>Duration : "${movie.duration}"</p>\
-                    <p>Countries : "${movie.countries}"</p>\
-                    <p>Box office : "${movie.worldwide_gross_income}"</p>\
-                    <p>Description : ${movie.description}</p>\
-                    <a href="#" class="modal__close">&times;</a>\
-                </div>\
-            </div>`; 
+    let bodyHTML = document.querySelector(".modal")
+    bodyHTML.innerHTML +=
+    `
+    <div \
+    id="${movie.id}" \
+    class="modal">\
+        <div \
+        class="modal__content" \
+        style="background-image: url(${movie.image_url});
+                background-size:cover;">\
+            <h1>${movie.title}</h1>\
+            <p>Genre : ${movie.genre}</p>\
+            <p>Date released : ${movie.date_published}</p>\
+            <p>Rate : "${movie.rated}"</p>\
+            <p>IMDB Score : "${movie.imdb_score}"</p>\
+            <p>Directors : "${movie.directors}"</p>\
+            <p>Actors : "${movie.actors}"</p>\
+            <p>Duration : "${movie.duration}"</p>\
+            <p>Countries : "${movie.countries}"</p>\
+            <p>Box office : "${movie.worldwide_gross_income}"</p>\
+            <p>Description : ${movie.description}</p>\
+            <a href="#" class="modal__close">&times;</a>\
+        </div>\
+    </div>
+    `;
+
+    return `
+    <div class="informations">\
+        <a href="#${movie.id}" \
+        data-target="#${movie.id}" \
+        data-toggle="modal"> \
+            <img\
+            src=${movie.image_url} \
+            class="bigPoster" \
+            >\
+        </a> \
+        <p class="title">${movie.title}</p>\
+            <div>\
+                <p class="desc">${movie.description}</p>\
+            </div>\
+    </div>
+            `; 
 }
 
 /**

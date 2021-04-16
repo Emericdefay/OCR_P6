@@ -4,6 +4,7 @@ $duration: 250ms;
 {
     font-size: 2.5vh;
     color:rgb(255, 255, 255);
+    z-index: 1;
 
     h1
     {
@@ -135,6 +136,7 @@ body
 
 .single-movie 
 {
+    z-index: 1;
     .title, .desc
     {
         position: relative;
@@ -142,7 +144,6 @@ body
         color: #ffffff;
         text-shadow: 0.25vh 0.25vh #000000;
         text-align: left;
-        z-index: 100;
         right: 0;
         bottom: 0;
     }

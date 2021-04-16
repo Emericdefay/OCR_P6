@@ -2,6 +2,7 @@
 * {
   font-size: 2.5vh;
   color: white;
+  z-index: 1;
 }
 
 * h1 {
@@ -122,13 +123,16 @@ body p.category {
   text-decoration: none;
 }
 
+.single-movie {
+  z-index: 1;
+}
+
 .single-movie .title, .single-movie .desc {
   position: relative;
   font-size: 7vh;
   color: #ffffff;
   text-shadow: 0.25vh 0.25vh #000000;
   text-align: left;
-  z-index: 100;
   right: 0;
   bottom: 0;
 }
