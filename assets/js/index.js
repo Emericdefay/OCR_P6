@@ -1,5 +1,5 @@
 // url API
-const url = "http://localhost:8000/api/v1/titles/";
+const url = "http://localhost:8000/api/v1/titles/?";
 
 // categories
 let bestMovie = document.querySelector("#bestMovie");
@@ -10,58 +10,94 @@ let cat3 = document.querySelector("#cat3");
 
 start();
 
-function createMoviePoster(movies, parent)
+
+////////////////////////////////////////////////////////////////
+
+async function getInfo(url)
 {
-    /*
-     *
-     */
-    return movies.map((movie)=>
-        {
+    return await fetch(url)
+    .then((res)=>res.json())
+    .then((data)=>
+    {
         return `<div \
                 class="carousel__slide">\
-                    <a href="#${movie.id}" \
-                    data-target="#${movie.id}" \
+                    <a href="#${data.id}" \
+                    data-target="#${data.id}" \
                     data-toggle="modal">
                         <img \
-                        src=${movie.image_url} \
+                        src=${data.image_url} \
                         class="poster"/>\
                     </a>
                 </div>
-                
+                    
                 <div \
-                id="${movie.id}" \
+                id="${data.id}" \
                 class="modal">\
                     <div \
                     class="modal__content" \
-                    style="background-image: url(${movie.image_url});
-                            background-size:cover;">\
-                        <h1>${movie.title}</h1>\
-                        <p>Genre : ${movie.genre}</p>\
-                        <p>Date released : ${movie.date_published}</p>\
-                        <p>Rate : "${movie.rated}"</p>\
-                        <p>IMDB Score : "${movie.imdb_score}"</p>\
-                        <p>Directors : "${movie.directors}"</p>\
-                        <p>Actors : "${movie.actors}"</p>\
-                        <p>Duration : "${movie.duration}"</p>\
-                        <p>Countries : "${movie.countries}"</p>\
-                        <p>Box office : "${movie.worldwide_gross_income}"</p>\
-                        <p>Description : ${movie.description}</p>\
-                        <a href="#${parent}" class="modal_close">&times;</a>\
+                    style="background-image: url(${data.image_url});
+                        background-size:cover;">\
+                        <h1>${data.title}</h1>\
+                        <p>Genre : ${data.genres}</p>\
+                        <p>Date released : ${data.year}</p>\
+                        <p>Rate : "${data.votes}"</p>\
+                        <p>IMDB Score : "${data.imdb_score}"</p>\
+                        <p>Directors : "${data.directors}"</p>\
+                        <p>Actors : "${data.actors}"</p>\
+                        <p>Duration : "${data.duration}"</p>\
+                        <p>Countries : "${data.countries}"</p>\
+                        <p>Box office : "${data.worldwide_gross_income}"</p>\
+                        <p>Description : ${data.description}</p>\
+                        <a href="#${parent}" class="modal__close">&times;</a>\
                     </div>\
                 </div>`;
-        })                  
+    })
 }
 
+/**
+ * 
+ * @param {*} movies 
+ * @param {*} parent 
+ * @returns 
+ */
+async function createMoviePoster(movies, parent)
+{
+    return await movies.map((movie)=>
+        {
+            return getInfo(movie.url)
+            .then(data => 
+            {
+                return data
+            })
+        })               
+}
+
+
+/**
+ * 
+ * @param {*} url 
+ * @param {*} start 
+ * @param {*} range 
+ * @returns 
+ */
 async function getData(url, start, range)
 {
-    return  fetch(url)
-            .then((res) => res.json())
-            .then((data)=>
-            {
-                return createMoviePoster(data.results.slice(start, range));
-            });
+    return fetch(url)
+                .then((res) => res.json())
+                .then((data)=> createMoviePoster(data.results.slice(start, range)))
+                .then((prom)=>
+                {   
+                    return Promise.all(prom);
+                }); 
+                
+                 
 }
 
+/**
+ * 
+ * @param {*} command 
+ * @returns 
+ */
 async function getPostersIndex(command)
 {
     let newUrl = url + command;
@@ -72,11 +108,13 @@ async function getPostersIndex(command)
     return data3;
 }
 
+/**
+ * 
+ * @param {*} movie 
+ * @returns 
+ */
 function createMovieInfo(movie)
 {
-    /*
-     *
-     */
     return `<div class="informations">\
                 <a href="#${movie.id}" \
                 data-target="#${movie.id}" \
@@ -109,11 +147,16 @@ function createMovieInfo(movie)
                     <p>Countries : "${movie.countries}"</p>\
                     <p>Box office : "${movie.worldwide_gross_income}"</p>\
                     <p>Description : ${movie.description}</p>\
-                    <a href="#" class="modal_close">&times;</a>\
+                    <a href="#" class="modal__close">&times;</a>\
                 </div>\
             </div>`; 
 }
 
+/**
+ * 
+ * @param {*} url 
+ * @returns 
+ */
 async function getUrlBestMovie(url)
 {
     return  fetch(url)
@@ -125,9 +168,13 @@ async function getUrlBestMovie(url)
             });
 }
 
+/**
+ * 
+ * @returns 
+ */
 async function getBestMoviePoster()
 {
-    const urlImdb = url + "?sort_by=-imdb_score";
+    const urlImdb = url + "&sort_by=-imdb_score";
     const urlBestMovie = await getUrlBestMovie(urlImdb);
     return fetch(urlBestMovie)
             .then((res)=>res.json())
@@ -137,7 +184,9 @@ async function getBestMoviePoster()
                 });
 }
 
-
+/**
+ * 
+ */
 class SlideShow
 {
     /**
@@ -177,6 +226,9 @@ class SlideShow
         this.createArrow();
     }
 
+    /**
+     * 
+     */
     setStyle()
     {
         let ratio = (this.items.length / this.options.slidesVisible);
@@ -193,6 +245,9 @@ class SlideShow
             })
     }
 
+    /**
+     * 
+     */
     createArrow()
     {
         let nextButton = this.createDivWithClass("carousel__next");
@@ -203,16 +258,26 @@ class SlideShow
         prevButton.addEventListener("click", this.prevSlide.bind(this));
     }
 
+    /**
+     * 
+     */
     nextSlide()
     {
         this.translate(this.currentSlide + this.options.slidesToScroll);
     }
 
+    /**
+     * 
+     */
     prevSlide()
     {
         this.translate(this.currentSlide - this.options.slidesToScroll); 
     }
 
+    /**
+     * 
+     * @param {*} index 
+     */
     translate(index)
     {
         let translation = -0.8*index*this.options.slidesToScroll*(this.container.offsetWidth / this.items.length);
@@ -234,16 +299,19 @@ class SlideShow
     }
 }
 
+/**
+ * Start the program by 
+ */
 async function start()
 {
     let movieBest = await getBestMoviePoster()
 
     bestMovie.innerHTML = movieBest;
 
-    let movieCatBestMovies = await getPostersIndex("?sort_by=-imdb_score");
-    let movieCat1 = await getPostersIndex("?genre=Fantasy");
-    let movieCat2 = await getPostersIndex("?genre=Drama");
-    let movieCat3 = await getPostersIndex("?genre=Family");
+    let movieCatBestMovies = await getPostersIndex("&sort_by=-imdb_score");
+    let movieCat1 = await getPostersIndex("&genre=Fantasy");
+    let movieCat2 = await getPostersIndex("&genre=Drama");
+    let movieCat3 = await getPostersIndex("&genre=Family");
 
     document.addEventListener("start", createSlider("#bestMovies", movieCatBestMovies));
     document.addEventListener("start", createSlider("#cat1", movieCat1));
@@ -251,6 +319,11 @@ async function start()
     document.addEventListener("start", createSlider("#cat3", movieCat3));
 }
 
+/**
+ * 
+ * @param {String} name : Name of the SQUELETON category.
+ * @param {Array} listPictures : List of HTML pictures that belong to category.
+ */
 async function createSlider(name, listPictures){
     new SlideShow(name, listPictures,
     {
