@@ -58,12 +58,13 @@ body p.category {
 }
 
 .modal {
+  clear: both;
   font-size: medium;
   color: red;
   position: fixed;
   z-index: 100;
   visibility: hidden;
-  opacity: 0;
+  /*opacity: 0;*/
   background-color: #972e2e;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -80,10 +81,13 @@ body p.category {
   right: 0;
   bottom: 0;
   left: 0;
-  background: #4d4d4d;
+  background: #1a1a1a;
+  -webkit-transform-style: flat;
+          transform-style: flat;
 }
 
 .modal:target {
+  z-index: 100;
   clear: both;
   visibility: visible;
   opacity: 1;
@@ -91,12 +95,13 @@ body p.category {
 }
 
 .modal .modal__content {
+  clear: both;
   font-size: medium;
   color: white;
   /*modales*/
   text-shadow: 0.25vh 0.25vh #000000;
   border-radius: 4px;
-  position: relative;
+  position: fixed;
   width: 558px;
   height: 950px;
   max-width: 90%;
@@ -167,8 +172,8 @@ body p.category {
   display: block;
   font-size: 5vh;
   width: 10%;
-  -webkit-transform: translate(-580%, 400%);
-          transform: translate(-580%, 400%);
+  -webkit-transform: translate(-580%, 300%);
+          transform: translate(-580%, 300%);
 }
 
 .list {
@@ -209,9 +214,8 @@ body p.category {
 }
 
 .carousel .carousel__container::after {
-  content: "";
+  /*content: "";*/
   clear: both;
-  display: table;
 }
 
 .carousel .carousel__next, .carousel .carousel__prev {
@@ -234,4 +238,9 @@ body p.category {
 
 .carousel .carousel__slide {
   float: right;
+}
+
+.carousel .carousel__next::after,
+.carousel .carousel__prev::after {
+  clear: both;
 }

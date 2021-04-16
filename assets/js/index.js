@@ -13,12 +13,44 @@ start();
 
 ////////////////////////////////////////////////////////////////
 
+/**
+ * 
+ * @param {*} url 
+ * @returns 
+ */
 async function getInfo(url)
 {
     return await fetch(url)
     .then((res)=>res.json())
     .then((data)=>
     {
+        let bodyHTML = document.querySelector(".modal")
+        bodyHTML.innerHTML +=
+        `<div \
+        id="${data.id}" \
+
+        class="modal">\
+            <div \
+            class="modal__content" \
+            style="background-image: url(${data.image_url});
+                background-size:cover;">\
+                <h1>${data.title}</h1>\
+                <p>Genre : ${data.genres}</p>\
+                <p>Date released : ${data.year}</p>\
+                <p>Rate : "${data.votes}"</p>\
+                <p>IMDB Score : "${data.imdb_score}"</p>\
+                <p>Directors : "${data.directors}"</p>\
+                <p>Actors : "${data.actors}"</p>\
+                <p>Duration : "${data.duration}"</p>\
+                <p>Countries : "${data.countries}"</p>\
+                <p>Box office : "${data.worldwide_gross_income}"</p>\
+                <p>Description : ${data.description}</p>\
+                <a href="#${parent}" class="modal__close">&times;</a>\
+            </div>\
+        </div>`;
+
+        //console.log(bodyHTML)
+
         return `<div \
                 class="carousel__slide">\
                     <a href="#${data.id}" \
@@ -28,28 +60,6 @@ async function getInfo(url)
                         src=${data.image_url} \
                         class="poster"/>\
                     </a>
-                </div>
-                    
-                <div \
-                id="${data.id}" \
-                class="modal">\
-                    <div \
-                    class="modal__content" \
-                    style="background-image: url(${data.image_url});
-                        background-size:cover;">\
-                        <h1>${data.title}</h1>\
-                        <p>Genre : ${data.genres}</p>\
-                        <p>Date released : ${data.year}</p>\
-                        <p>Rate : "${data.votes}"</p>\
-                        <p>IMDB Score : "${data.imdb_score}"</p>\
-                        <p>Directors : "${data.directors}"</p>\
-                        <p>Actors : "${data.actors}"</p>\
-                        <p>Duration : "${data.duration}"</p>\
-                        <p>Countries : "${data.countries}"</p>\
-                        <p>Box office : "${data.worldwide_gross_income}"</p>\
-                        <p>Description : ${data.description}</p>\
-                        <a href="#${parent}" class="modal__close">&times;</a>\
-                    </div>\
                 </div>`;
     })
 }
@@ -129,6 +139,7 @@ function createMovieInfo(movie)
                         <p class="desc">${movie.description}</p>\
                     </div>\
             </div>\
+
             <div \
             id="${movie.id}" \
             class="modal">\
@@ -263,7 +274,10 @@ class SlideShow
      */
     nextSlide()
     {
-        this.translate(this.currentSlide + this.options.slidesToScroll);
+        if (this.currentSlide < 3)
+        {
+            this.translate(this.currentSlide + this.options.slidesToScroll);
+        }
     }
 
     /**
@@ -271,7 +285,10 @@ class SlideShow
      */
     prevSlide()
     {
-        this.translate(this.currentSlide - this.options.slidesToScroll); 
+        if (this.currentSlide > 0)
+        {
+            this.translate(this.currentSlide - this.options.slidesToScroll); 
+        }
     }
 
     /**
@@ -280,9 +297,9 @@ class SlideShow
      */
     translate(index)
     {
-        let translation = -0.8*index*this.options.slidesToScroll*(this.container.offsetWidth / this.items.length);
+        let translation = -0.85*index*this.options.slidesToScroll*(this.container.offsetWidth / this.items.length);
         this.container.style.translation
-        this.container.style.transform = "translate3d("+translation+"px, 0px, 0px)";
+        this.container.style.transform = "translate("+translation+"px, 0px)";
         this.currentSlide = index;
     }
 
