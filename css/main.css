@@ -1,3 +1,9 @@
+@charset "UTF-8";
+* {
+  font-size: 2vh;
+  color: white;
+}
+
 header {
   background: content-box radial-gradient(#530000, #7c1111);
   height: 20vh;
@@ -5,7 +11,7 @@ header {
 
 header img {
   -webkit-filter: drop-shadow(2vh 2vh 2vh white);
-  filter: drop-shadow(0vh 0vh 0.5vh white);
+  filter: drop-shadow(0.5vh 0.5vh 0.5vh white);
   width: 33vh;
   display: block;
   margin-left: auto;
@@ -38,11 +44,71 @@ body {
   background-color: #262626;
 }
 
-body p {
+body p.category {
   margin-bottom: 0vh;
   font-size: 10vh;
   color: white;
+  /*catégories*/
+  text-shadow: 0.25vh 0.25vh #000000;
   text-align: center;
+}
+
+.modal {
+  font-size: medium;
+  color: red;
+  position: fixed;
+  z-index: 100;
+  visibility: hidden;
+  opacity: 0;
+  background-color: #972e2e;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #4d4d4d;
+}
+
+.modal:target {
+  visibility: visible;
+  opacity: 1;
+  font-size: medium;
+}
+
+.modal .modal__content {
+  font-size: medium;
+  color: white;
+  /*modales*/
+  text-shadow: 0.25vh 0.25vh #000000;
+  border-radius: 4px;
+  position: relative;
+  width: 558px;
+  height: 950px;
+  max-width: 90%;
+  background: white;
+  padding: 2em 1em;
+}
+
+.modal .modal__content p {
+  color: white;
+}
+
+.modal .modal__close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  color: gray;
+  text-decoration: none;
 }
 
 .single-movie .title, .single-movie .desc {
@@ -78,22 +144,33 @@ body p {
 
 .single-movie .category {
   float: right;
+  font-size: 7vh;
   margin-right: 10vh;
+  -webkit-transform: translate(0%, -80%);
+          transform: translate(0%, -80%);
+  color: white;
 }
 
 .single-movie .button {
+  background: #adadad;
+  color: white;
+  border-radius: 1vh;
   position: relative;
   right: 0;
   bottom: 0;
   display: block;
   font-size: 5vh;
   width: 10%;
-  -webkit-transform: translate(-580%, -40%);
-          transform: translate(-580%, -40%);
+  -webkit-transform: translate(-580%, 500%);
+          transform: translate(-580%, 500%);
 }
 
-.list p {
+.list {
   clear: both;
+}
+
+.list p .category {
+  color: white;
 }
 
 .carousel {
