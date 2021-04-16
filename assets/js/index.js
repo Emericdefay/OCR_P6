@@ -25,10 +25,10 @@ let cat3 = document.querySelector("#cat3");
 // const description = document.querySelector("#description");
 
 
-showMovies();
-start()
+//showMovies();
+start();
 
-function createMoviePoster(category, movies)
+function createMoviePoster(movies)
 {
     /*
      *
@@ -43,13 +43,14 @@ function createMoviePoster(category, movies)
 
 }
 
-async function getData(url, name, start, range)
+async function getData(url, start, range)
 {
     return  fetch(url)
             .then((res) => res.json())
             .then((data)=>
             {
-                return createMoviePoster(name, data.results.slice(start, range));});
+                return createMoviePoster(data.results.slice(start, range));
+            });
 
 
     // return new Promise((resolve, reject) =>
@@ -64,15 +65,56 @@ async function getData(url, name, start, range)
     // })
 }
 
-async function getPostersIndex(name, command)
+async function getPostersIndex(command)
 {
     let newUrl = url + command;
-    const data = await getData(newUrl, name, 0, 6)
-    newUrl += "&page=2"
-    const data2 = await getData(newUrl, name, 0, 2)
+    const data = await getData(newUrl, 0, 6);
+    newUrl += "&page=2";
+    const data2 = await getData(newUrl, 0, 2);
     const data3 = data.concat(data2);
     return data3;
     //return element;
+}
+
+//
+
+function createMovieInfo(movie)
+{
+    /*
+     *
+     */
+    console.log(movie)
+    return `<div class="informations">\
+            <img src=${movie.image_url} class="bigPoster"/>
+            <p class="title">${movie.title}</p>\
+                <div>\
+                    <p class="desc">${movie.description}</p>\
+                </div>\
+            </div>`;               
+}
+
+async function getUrlBestMovie(url)
+{
+    return  fetch(url)
+            .then((res) => res.json())
+            .then((data)=>
+            {
+                console.log(data.results[0].url);
+                return data.results[0].url;
+            });
+}
+
+async function getBestMoviePoster()
+{
+    const urlImdb = url + "?sort_by=-imdb_score";
+    const urlBestMovie = await getUrlBestMovie(urlImdb);
+    return fetch(urlBestMovie)
+            .then((res)=>res.json())
+            .then((data)=>
+                {
+                    console.log(data)
+                    return createMovieInfo(data)
+                });
 }
 
 // async function getImage(url){
@@ -165,10 +207,10 @@ function showMovies()
 
 
     // Fetch :
-    let movieCatBestMovies = getPostersIndex("bestMovies", "?sort_by=-imdb_score");
-    let movieCat1 = getPostersIndex("cat1", "?genre=Fantasy");
-    let movieCat2 = getPostersIndex("cat2", "?genre=Drama");
-    let movieCat3 = getPostersIndex("cat3", "?genre=Family");
+    let movieCatBestMovies = getPostersIndex("?sort_by=-imdb_score");
+    let movieCat1 = getPostersIndex("?genre=Fantasy");
+    let movieCat2 = getPostersIndex("?genre=Drama");
+    let movieCat3 = getPostersIndex("?genre=Family");
 
     // Get images :
          
@@ -249,7 +291,7 @@ class SlideShow
         this.base.appendChild(nextButton);
         this.base.appendChild(prevButton);
         nextButton.addEventListener("click", this.nextSlide.bind(this));
-        prevButton.addEventListener("click",this.prevSlide.bind(this));
+        prevButton.addEventListener("click", this.prevSlide.bind(this));
     }
 
     nextSlide()
@@ -268,7 +310,6 @@ class SlideShow
     {
 
         let translation = -0.8*index*this.options.slidesToScroll*(this.container.offsetWidth / this.items.length);
-        console.log(this.container.offsetWidth, translation, this.items.length)
         this.container.style.translation
         this.container.style.transform = "translate3d("+translation+"px, 0px, 0px)";
         this.currentSlide = index;
@@ -289,10 +330,14 @@ class SlideShow
 
 async function start()
 {
-    let movieCatBestMovies = await getPostersIndex("bestMovies", "?sort_by=-imdb_score");
-    let movieCat1 = await getPostersIndex("cat1", "?genre=Fantasy");
-    let movieCat2 = await getPostersIndex("cat2", "?genre=Drama");
-    let movieCat3 = await getPostersIndex("cat3", "?genre=Family");
+    let movieBest = await getBestMoviePoster()
+
+    bestMovie.innerHTML = movieBest;
+
+    let movieCatBestMovies = await getPostersIndex("?sort_by=-imdb_score");
+    let movieCat1 = await getPostersIndex("?genre=Fantasy");
+    let movieCat2 = await getPostersIndex("?genre=Drama");
+    let movieCat3 = await getPostersIndex("?genre=Family");
 
     document.addEventListener("start", createSlider("#bestMovies", movieCatBestMovies));
     document.addEventListener("start", createSlider("#cat1", movieCat1));
