@@ -5,8 +5,8 @@ body {
 
 body p {
   font-size: x-large;
-  color: #ffffff;
-  text-decoration: underline;
+  color: white;
+  text-align: center;
 }
 
 body a {
@@ -14,25 +14,70 @@ body a {
   color: #ffffff;
 }
 
-.slider {
-  width: 80%;
-  margin: 10px 0;
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: ()[5];
-      grid-template-columns: repeat(5);
+.carousel {
+  position: relative;
   overflow: hidden;
+  background-color: black;
 }
 
-.slides img {
-  width: 20vh;
-  padding: 0 2px;
+.carousel .carousel__container {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  overflow-x: auto;
+  height: 350px;
+  width: auto;
+  -webkit-transition: 250ms;
+  transition: 250ms;
+}
+
+.carousel .carousel__container img {
+  width: 25vh;
+  padding: 0 5px;
   -webkit-transition: 250ms all;
   transition: 250ms all;
 }
 
-.slides img:hover {
-  margin: 0 40px;
-  -webkit-transform: scale(1.2);
-          transform: scale(1.2);
+.carousel .carousel__container img:hover {
+  margin: 0 0px;
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+
+.carousel .carousel__container div {
+  -webkit-box-flex: 0;
+      -ms-flex-positive: 0;
+          flex-grow: 0;
+  -ms-flex-negative: 0;
+      flex-shrink: 0;
+  max-width: 100%;
+}
+
+.carousel .carousel__container::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.carousel .carousel__next, .carousel .carousel__prev {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #494949 url(./arrow.svg) center center no-repeat;
+  background-size: 20px 20px;
+  border-radius: 50%;
+  top: 50%;
+  margin-top: -20px;
+  right: -00px;
+  cursor: pointer;
+}
+
+.carousel .carousel__prev {
+  left: 0px;
+}
+
+.carousel .carousel__slide {
+  float: left;
 }

@@ -8,8 +8,8 @@ body
     p
     {
         font-size: x-large;
-        color: #ffffff;
-        text-decoration: underline;
+        color: hsl(0, 0%, 100%);
+        text-align: center;
 
     }
 
@@ -22,29 +22,75 @@ body
 
 
 
-.slider
+.carousel
 {
-    width: 80%;
-    margin: 10px 0;
-    display: grid;
-    grid-template-columns: repeat(5);
+    position: relative;
     overflow: hidden;
+    background-color: black;
 
-}
-
-    .slides
+    .carousel__container
     {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        height: 350px;
+        width: auto;
+        transition: $duration;
         img
         {
-            width: 20vh;
-            padding: 0 2px;
+            width: 25vh;
+            padding: 0 5px;
             transition: $duration all;
 
             &:hover
             {
-                margin: 0 40px;
-                transform: scale(1.2);
+                margin: 0 0px;
+                transform: scale(1.1);
             }
         }
+
     }
 
+    .carousel__container div
+    {
+        flex-grow: 0;
+        flex-shrink: 0;
+        max-width: 100%;
+    }
+    
+    
+    .carousel__container::after
+    {
+        content: "";
+        clear: both;
+        display: table;
+        
+    }
+    
+    .carousel__next, .carousel__prev
+    {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        background: rgb(73, 73, 73) url(./arrow.svg) center center no-repeat;
+        background-size: 20px 20px;
+        border-radius: 50%;
+        top: 50%;
+        margin-top: -20px;
+        right: -00px;
+        cursor: pointer;
+    }
+
+    .carousel__prev
+    {
+        
+        left: 0px
+    }
+
+
+    .carousel__slide
+    {
+        float: left;
+    }
+
+}
