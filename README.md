@@ -24,19 +24,21 @@ This project is a discovery of API and how to manage them with Javascript.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
-
 ### Prerequisites
 
-What things you need to install the software and how to install them.
+What things you need to run index.html.
 
+First:
 ```
 - A recent browser : Chrome, Mozilla, Opera, ...
 ```
+Second:
+Since this index communicate with a local API (in development) you need to setup this API.
+To do that: check this repository : <a href="https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR">OCMovies-API-EN-FR</a>.
+And follow the usage process.
 
-### Installing
+When your local server is ready, you can use this project.
 
-You don't need anything for this project. 
 
 ## 🎈 Usage <a name="usage"></a>
 
