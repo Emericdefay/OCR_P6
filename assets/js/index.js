@@ -18,9 +18,15 @@ start();
 
 
 /**
+ * Get information from a Movie Title Detail's JSON from the *OCMovies API* RESTful API.
  * 
- * @param {*} url 
- * @returns 
+ * Step 1:
+ *      Adding a modal with all informations needed in the <div class="modal"></div>.
+ * 
+ * Step 2:
+ *      Return a slide that will be a child of a "carousel__container" div.
+ * @param {String} url : Movie Title Detail's url from the *OCMovies API* RESTful API.
+ * @returns HTML <div class="carousel__slide"> Content </div>
  */
 async function getInfo(url)
 {
@@ -28,11 +34,10 @@ async function getInfo(url)
     .then((res)=>res.json())
     .then((data)=>
     {
-        let bodyHTML = document.querySelector(".modal")
+        let bodyHTML = document.querySelector(".modal");
         bodyHTML.innerHTML +=
         `<div \
         id="${data.id}" \
-
         class="modal">\
             <div \
             class="modal__content" \
@@ -41,15 +46,15 @@ async function getInfo(url)
                 <h1>${data.title}</h1>\
                 <p>Genre : ${data.genres}</p>\
                 <p>Date released : ${data.year}</p>\
-                <p>Rate : "${data.votes}"</p>\
-                <p>IMDB Score : "${data.imdb_score}"</p>\
-                <p>Directors : "${data.directors}"</p>\
-                <p>Actors : "${data.actors}"</p>\
-                <p>Duration : "${data.duration}"</p>\
-                <p>Countries : "${data.countries}"</p>\
-                <p>Box office : "${data.worldwide_gross_income}"</p>\
+                <p>Rate : ${data.votes}</p>\
+                <p>IMDB Score : ${data.imdb_score}</p>\
+                <p>Directors : ${data.directors}</p>\
+                <p>Actors : ${data.actors}</p>\
+                <p>Duration : ${data.duration} minutes</p>\
+                <p>Countries : ${data.countries}</p>\
+                <p>Box office : ${data.worldwide_gross_income}</p>\
                 <p>Description : ${data.description}</p>\
-                <a href="#${parent}" class="modal__close">&times;</a>\
+                <a href="#${null}" class="modal__close">&times;</a>\
             </div>\
         </div>`;
 
@@ -67,29 +72,27 @@ async function getInfo(url)
 }
 
 /**
- * 
- * @param {*} movies 
- * @param {*} parent 
- * @returns 
+ * @param {JSON} movies : Movie Title List's JSONs from the *OCMovies API* RESTful API.
+ * @returns An array of promises HTML divs "carousel__slide"
  */
-async function createMoviePoster(movies, parent)
+async function createMoviePoster(movies)
 {
     return await movies.map((movie)=>
         {
             return getInfo(movie.url)
             .then(data => 
             {
-                return data
+                return data;
             })
         })               
 }
 
 /**
- * 
- * @param {*} url 
- * @param {*} start 
- * @param {*} range 
- * @returns 
+ * The *OCMovies API* RESTful API give 5 objects. 
+ * @param {String} url : Movie Title List's url from the *OCMovies API* RESTful API.
+ * @param {Number} start : Where it starts to slice objects
+ * @param {Number} range : Where it ends to slice objects
+ * @returns Get "carousel__slide" divs that will be added to "carousel__container"
  */
 async function getData(url, start, range)
 {
@@ -98,33 +101,37 @@ async function getData(url, start, range)
                 .then((data)=> createMoviePoster(data.results.slice(start, range)))
                 .then((prom)=>
                 {   
+                    // Fusion of multiple promises.
+                    // prom: [{...}, {...}, {...}, ...]
                     return Promise.all(prom);
                 });             
 }
 
 /**
- * 
- * @param {*} command 
- * @returns 
+ * @param {String} command : Command request on the *OCMovies API* RESTful API
+ * @returns Get ALL "carousel__slide" divs needed. Ready to be added to "carousel__container"
  */
 async function getPostersIndex(command)
 {
     let newUrl = url + command;
     const data = await getData(newUrl, 0, 6);
+
+    // We want 7 movies per carousel.
     newUrl += "&page=2";
     const data2 = await getData(newUrl, 0, 2);
+
     return data.concat(data2);
 }
 
 /**
  * 
- * @param {*} movie 
- * @returns 
+ * @param {JSON} movie : Movie Title Detail's JSONs from the *OCMovies API* RESTful API.
+ * @returns HTML <div class="informations"> Content </div> that will be add to <div class="single-Movie"></div>
  */
 function createMovieInfo(movie)
 {
-
-    let bodyHTML = document.querySelector(".modal")
+    // Add modal
+    let bodyHTML = document.querySelector(".modal");
     bodyHTML.innerHTML +=
     `
     <div \
@@ -135,21 +142,22 @@ function createMovieInfo(movie)
         style="background-image: url(${movie.image_url});
                 background-size:cover;">\
             <h1>${movie.title}</h1>\
-            <p>Genre : ${movie.genre}</p>\
+            <p>Genre : ${movie.genres}</p>\
             <p>Date released : ${movie.date_published}</p>\
-            <p>Rate : "${movie.rated}"</p>\
-            <p>IMDB Score : "${movie.imdb_score}"</p>\
-            <p>Directors : "${movie.directors}"</p>\
-            <p>Actors : "${movie.actors}"</p>\
-            <p>Duration : "${movie.duration}"</p>\
-            <p>Countries : "${movie.countries}"</p>\
-            <p>Box office : "${movie.worldwide_gross_income}"</p>\
+            <p>Rate : ${movie.rated}</p>\
+            <p>IMDB Score : ${movie.imdb_score}</p>\
+            <p>Directors : ${movie.directors}</p>\
+            <p>Actors : ${movie.actors}</p>\
+            <p>Duration : ${movie.duration} minutes</p>\
+            <p>Countries : ${movie.countries}</p>\
+            <p>Box office : ${movie.worldwide_gross_income}</p>\
             <p>Description : ${movie.description}</p>\
             <a href="#" class="modal__close">&times;</a>\
         </div>\
     </div>
     `;
 
+    // <div class="informations"> Content </div>
     return `
     <div class="informations">\
         <a href="#${movie.id}" \
@@ -169,9 +177,8 @@ function createMovieInfo(movie)
 }
 
 /**
- * 
- * @param {*} url 
- * @returns 
+ * @param {String} url : Movie Title List's url from the *OCMovies API* RESTful API.
+ * @returns Get the url of the most favorite Movie from the *OCMovies API* RESTful API.
  */
 async function getUrlBestMovie(url)
 {
@@ -179,14 +186,12 @@ async function getUrlBestMovie(url)
             .then((res) => res.json())
             .then((data)=>
             {
-                console.log(data.results[0].url);
                 return data.results[0].url;
             });
 }
 
 /**
- * 
- * @returns 
+ * @returns HTML <div class="informations"> Content </div> that will be add to <div class="single-Movie"></div>
  */
 async function getBestMoviePoster()
 {
@@ -196,18 +201,19 @@ async function getBestMoviePoster()
             .then((res)=>res.json())
             .then((data)=>
                 {
-                    return createMovieInfo(data)
+                    return createMovieInfo(data);
                 });
 }
 
 /**
- * 
+ * Carousel Behavior's class.
  */
 class SlideShow
 {
     /**
      * 
-     * @param {*} element 
+     * @param {String} name 
+     * @param {Array} listImages 
      * @param {*} options 
      */
     constructor(name, listImages, options = {})
@@ -216,53 +222,36 @@ class SlideShow
         // Default options:
         this.options = Object.assign({}, 
             {
-            slidesToScroll: 1,
-            slidesVisible: 4
+            slidesToScroll: 1
             }, options)
-        // Initials values
+        // Initials values:
         this.currentSlide = 0;
         this.items = listImages.map((x) => x);
+        this.translation = 0
+        this.widthMax = 440*this.items.length;
+        this.widthPic = 440;
 
+        // Transform listImages avoiding ",".
         listImages = listImages.join(" ");
 
-        // Divisions creation
+        // Divisions creation:
         this.base = this.createDivWithClass("carousel");
         this.container = this.createDivWithClass("carousel__container");
 
-        // Family creation
+        // Family creation:
         this.base.appendChild(this.container);
-        this.slide.appendChild(this.base)
+        this.slide.appendChild(this.base);
 
-        this.setStyle();
-
-        // Edition
+        // Edition:
         this.container.innerHTML = listImages;
         
         
+        //Add directional arrows:
         this.createArrow();
     }
 
     /**
-     * 
-     */
-    setStyle()
-    {
-        let ratio = (this.items.length / this.options.slidesVisible);
-        console.log(window.innerWidth)
-        this.container.style.width = (ratio * 100) + "%";
-        // A voir?
-        this.items.forEach((item,index) =>
-            {
-                let division = document.createElement("div")
-                division.setAttribute("class","image")
-                division.setAttribute("id",index)
-                division.innerHTML = item
-                this.items[index] = division
-            })
-    }
-
-    /**
-     * 
+     * Creating arrows clickable to navigate through the carousel.
      */
     createArrow()
     {
@@ -275,70 +264,80 @@ class SlideShow
     }
 
     /**
-     * 
+     * Translate Right
      */
     nextSlide()
     {
-        if (this.currentSlide < 3)
+        let zoomLevel = (window.devicePixelRatio);
+        let ratio = this.widthPic - ((this.widthPic/this.items.length)*((window.innerWidth*zoomLevel)/this.widthMax));
+        let numberSlideVisible = window.innerWidth/this.widthPic
+
+        let pas = -this.translation/ratio
+        let positionSlide = pas + numberSlideVisible;
+        
+        if ( positionSlide < this.items.length+1.05)
         {
-            this.translate(this.currentSlide + this.options.slidesToScroll);
+            this.translate(this.currentSlide + 1);
         }
     }
 
     /**
-     * 
+     * Translate Left
      */
     prevSlide()
     {
         if (this.currentSlide > 0)
         {
-            this.translate(this.currentSlide - this.options.slidesToScroll); 
+            this.translate(this.currentSlide - 1); 
         }
     }
 
     /**
-     * 
-     * @param {*} index 
+     * Use a transform: translate() style method on the container to translate all items.
+     * @param {Number} index : Reference to a position
      */
     translate(index)
     {
-        let translation = -0.85*index*this.options.slidesToScroll*(this.container.offsetWidth / this.items.length);
-        this.container.style.translation
-        this.container.style.transform = "translate("+translation+"px, 0px)";
+        let zoomLevel = (window.devicePixelRatio);
+        let ratio = this.widthPic - ((this.widthPic/this.items.length)*((window.innerWidth*zoomLevel)/this.widthMax));
+        this.translation = -index*ratio;
+        this.container.style.transform = "translate("+this.translation+"px, 0px)";
         this.currentSlide = index;
     }
 
     /**
-     * 
-     * @param {string} className 
+     * Snippet to create <div> with a class
+     * @param {string} className : Name of the class for the div
      * @returns {HTMLElement}
      */
     createDivWithClass(className)
     {
         let div = document.createElement('div');
         div.setAttribute("class", className);
-        return div
+        return div;
     }
 }
 
 /**
- * Start the program by 
+ * Starting the process.
  */
 async function start()
 {
-    let movieBest = await getBestMoviePoster()
-
+    // Single movie Doc:
+    let movieBest = await getBestMoviePoster();
     bestMovie.innerHTML = movieBest;
 
+    // Categories Doc:
     let movieCatBestMovies = await getPostersIndex("&sort_by=-imdb_score");
     let movieCat1 = await getPostersIndex("&genre=Fantasy");
     let movieCat2 = await getPostersIndex("&genre=Drama");
     let movieCat3 = await getPostersIndex("&genre=Family");
 
-    document.addEventListener("start", createSlider("#bestMovies", movieCatBestMovies));
-    document.addEventListener("start", createSlider("#cat1", movieCat1));
-    document.addEventListener("start", createSlider("#cat2", movieCat2));
-    document.addEventListener("start", createSlider("#cat3", movieCat3));
+    // Carousels:
+    createSlider("#bestMovies", movieCatBestMovies);
+    createSlider("#cat1", movieCat1);
+    createSlider("#cat2", movieCat2);
+    createSlider("#cat3", movieCat3);
 }
 
 /**
@@ -349,7 +348,6 @@ async function start()
 async function createSlider(name, listPictures){
     new SlideShow(name, listPictures,
     {
-        slidesToScroll: 1,
-        slidesVisible: 4
+        slidesToScroll: 1
     })
 }
