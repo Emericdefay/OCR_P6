@@ -2,31 +2,66 @@
 <html lang="fr">
     <head>
         <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>JustStreamIt</title>
-        <link rel="stylesheet" href="assets/css/style.css"/>
+        <link rel="stylesheet" href="./assets/css/main.css"/>
+        <script src="./assets/js/index.js" async></script>
+        <!--<script type="module" src="./assets/js/slideshow.js" async></script>-->
     </head>
 
-    <body>
-        <div id="bestMovie" class="single-movie">
-            <p>Best Movie</p>
+    <header>
+        <div class="board">
+            <img src="./assets/images/logo.png"/>
+            <a class="home" href="">Accueil</a>
+            <a class="category" href="">Catégories</a>
+        </div>
+    </header>
+
+    <body class="body">
+
+        <div class=modal>
+
+        </div>
+        
+        <div class="single-movie">
+            <div class="buttons">
+                <button href="" class="button" id="play"><span>Play </span></button>
+            </div>
+            <p>
+                <div id="bestMovie">
+
+                </div>
+            </p>
+            <p class="category">Best Movie</p>
+            
         </div>
 
-        <div id="bestMovies" class="list">
-            <p>Best Movies</p>
+        <div class="list">
+            <p class="category">Best Movies</p>
+            <div id="bestMovies" class="slider">
+
+            </div>
         </div>
 
-        <div id="cat1" class="list">
-            <p>Fantasy</p>
+        <div class="list">
+            <p class="category">Fantasy</p>
+            <div id="cat1" class="slider">
+
+            </div>
         </div>
 
-        <div id="cat2" class="list">
-            <p>Drama</p>
+        <div class="list">
+            <p class="category">Drama</p>
+            <div id="cat2" class="slider">
+
+            </div>
         </div>
 
-        <div id="cat3" class="list">
-            <p>Family</p>
-        </div>
+        <div class="list">
+            <p class="category">Family</p>
+            <div id="cat3" class="slider">
 
-        <script src="assets/js/index.js"></script>
+            </div>
+        </div>
     </body>
 </html>
