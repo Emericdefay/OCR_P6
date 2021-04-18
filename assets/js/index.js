@@ -106,18 +106,17 @@ async function getInfo(url)
         document.getElementById(idContent).style.backgroundSize = "cover";
 
         let slideCarousel = 
-        `<div \
-        class="carousel__slide">\
-            <a href="#${data.id}" \
-            data-target="#${data.id}" \
-            data-toggle="modal">
-                <img \
-                src=${data.image_url} \
-                class="poster"
-                alt = "" \
-                />\
-            </a>
-        </div>`;
+        `\n\t\t\t\t<div
+        class="carousel__slide">
+        \t\t\t<a href="#${data.id}"
+        data-target="#${data.id}" 
+        data-toggle="modal">
+        \t\t\t\t<img
+        src=${data.image_url} 
+        class="poster"
+        alt = ""/>
+        \t\t\t</a>
+        \t\t</div>\n`;
 
         return slideCarousel;
     })
@@ -232,21 +231,20 @@ function createMovieInfo(movie)
     // return <div class="informations"> Content </div>
     let firstMovie =
     `
-    \t<a href="#${movie.id}" 
+    \t\t\t<a href="#${movie.id}" 
     data-target="#${movie.id}" 
     data-toggle="modal"> 
-    \t\t\t<img
+    \t\t\t\t<img
     src=${movie.image_url} 
     class="bigPoster" 
-    alt = "" 
-    >
-    \t</a> 
-    \t<p class="title">${movie.title}</p>
-    \t\t<div>
-    \t\t\t<p class="desc">${movie.description}</p>
-    \t\t</div>`; 
+    alt = "">
+    \t\t\t</a> 
+    \t\t\t<p class="title">${movie.title}</p>
+    \t\t\t<div>
+    \t\t\t\t<p class="desc">${movie.description}</p>
+    \t\t\t</div>\n\t\t\t`; 
 
-    return firstMovie
+    return firstMovie;
 }
 
 /**
@@ -281,12 +279,12 @@ async function getBestMovie()
 /**
  * Carousel Behavior's class.
  */
-class SlideShow
+class Carousel
 {
     /**
      * Constructor
      * @param {String} name : Name of the HTML 
-     * @param {Array} listSlides : 
+     * @param {Array} listSlides : List of Slides that'll be elements of the carousel
      */
     constructor(name, listSlides)
     {
@@ -338,11 +336,11 @@ class SlideShow
         // Calculs
         let zoomLevel = (window.devicePixelRatio);
         let ratio = this.widthPic - ((this.widthPic/this.items.length)*((window.innerWidth*zoomLevel)/this.widthMax));
-        let numberSlideVisible = window.innerWidth/this.widthPic
-        let pas = -this.translation/ratio
+        let numberSlideVisible = window.innerWidth/this.widthPic;
+        let pas = -this.translation/ratio;
         let positionSlide = pas + numberSlideVisible;
         
-        if ( positionSlide < this.items.length+1.05)
+        if (positionSlide < this.items.length+1.05)
         {
             this.translate(this.currentSlide + 1);
         }
@@ -408,11 +406,10 @@ async function start()
 }
 
 /**
- * 
+ * Litteraly Create *Carousel* of *name* with *listSlides*.
  * @param {String} name : Name of the SQUELETON category.
  * @param {Array} listSlides : List of slides that belong to category.
  */
 async function createSlider(name, listSlides){
-    console.log(listSlides);
-    new SlideShow(name, listSlides);
+    new Carousel(name, listSlides);
 }
