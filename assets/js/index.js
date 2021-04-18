@@ -1,34 +1,15 @@
-/**
- * 
- * 
- * 
- */
-
 // Getting url of the API.
 const url = "http://localhost:8000/api/v1/titles/?";
 
-// Create documents from the index.html squeleton.
+// Get bones of the initial index.html
 let bestMovie = document.querySelector("#bestMovie");
 let bestMovies = document.querySelector("#bestMovies");
 let cat1 = document.querySelector("#cat1");
 let cat2 = document.querySelector("#cat2");
 let cat3 = document.querySelector("#cat3");
 
+// Start the script.
 start();
-
-
-/**
- * Get information from a Movie Title Detail's JSON from the *OCMovies API* RESTful API.
- * 
- * Step 1:
- *      Adding a modal with all informations needed in the <div class="modal"></div>.
- * 
- * Step 2:
- *      Return a slide that will be a child of a "carousel__container" div.
- * @param {String} url : Movie Title Detail's url from the *OCMovies API* RESTful API.
- * @returns HTML <div class="carousel__slide"> Content </div>
- */
-
 
 /**
  * @param {String} text : The text to check
@@ -71,9 +52,15 @@ function checkData(data)
 }
 
 /**
+ * Get information from a Movie Title Detail's JSON from the *OCMovies API* RESTful API.
  * 
+ * Step 1:
+ *      Adding a modal with all informations needed in the <div class="modal"></div>.
+ * 
+ * Step 2:
+ *      Return a slide that will be a child of a "carousel__container" div.
  * @param {String} url : Movie Title Detail's url from the *OCMovies API* RESTful API.
- * @returns Element "carousel__slide"
+ * @returns HTML <div class="carousel__slide"> Content </div>
  */
 async function getInfo(url)
 {
@@ -81,18 +68,13 @@ async function getInfo(url)
     .then((res)=>res.json())
     .then((data)=>
     {   
+        // check if data are null
+        data = checkData(data);
+
         let bodyHTML = document.querySelector(".modals");
 
-        if(document.getElementById(data.id))
+        if(!document.getElementById(data.id))
         {
-            // check if data are null
-            data = checkData(data);
-        }
-        else
-        {
-            // check if data are null
-            data = checkData(data);
-
             bodyHTML.innerHTML += 
             `
             <div 
@@ -119,22 +101,25 @@ async function getInfo(url)
         }
 
         //Set Image of modal__content as background
-        let idContent = `${data.id}__content`
+        let idContent = `${data.id}__content`;
         document.getElementById(idContent).style.backgroundImage = `url(${data.image_url})`;
         document.getElementById(idContent).style.backgroundSize = "cover";
 
-        return `<div \
-                class="carousel__slide">\
-                    <a href="#${data.id}" \
-                    data-target="#${data.id}" \
-                    data-toggle="modal">
-                        <img \
-                        src=${data.image_url} \
-                        class="poster"
-                        alt = "" \
-                        />\
-                    </a>
-                </div>`;
+        let slideCarousel = 
+        `<div \
+        class="carousel__slide">\
+            <a href="#${data.id}" \
+            data-target="#${data.id}" \
+            data-toggle="modal">
+                <img \
+                src=${data.image_url} \
+                class="poster"
+                alt = "" \
+                />\
+            </a>
+        </div>`;
+
+        return slideCarousel;
     })
 }
 
@@ -178,7 +163,7 @@ async function getData(url, start, range)
  * @param {String} command : Command request on the *OCMovies API* RESTful API
  * @returns Get ALL "carousel__slide" divs needed. Ready to be added to "carousel__container"
  */
-async function getPostersIndex(command)
+async function getSlides(command)
 {
     let newUrl = url + command;
     let page = "&page=1"
@@ -186,80 +171,82 @@ async function getPostersIndex(command)
 
     // We want 7 movies per carousel.
     page = "&page=2";
-    const data2 = await getData(newUrl+page, 0, 1);
+    const data2 = await getData(newUrl+page, 0, 2);
 
-    return data.concat(data2);
+    // Concatenate page1 & page2.
+    const dataAll = data.concat(data2);
+
+    return dataAll;
 }
 
 /**
+ * Get information from a Movie Title Detail's JSON from the *OCMovies API* RESTful API.
+ * 
+ * Step 1:
+ *      Adding a modal with all informations needed in the <div class="modal"></div>.
+ * 
+ * Step 2:
+ *      Return information that will be a child of the "bestMovie" div.
  * 
  * @param {JSON} movie : Movie Title Detail's JSONs from the *OCMovies API* RESTful API.
- * @returns HTML <div class="informations"> Content </div> that will be add to <div class="single-Movie"></div>
+ * @returns HTML <div class="informations"> Content </div> that will be add to <div class="bestMovie"></div>
  */
 function createMovieInfo(movie)
 {
-
-    // Check single movie data
+    // check if movie data are null
     movie = checkData(movie);
 
     // Add modal
     let bodyHTML = document.querySelector(".modals");
 
-    if(document.getElementById(movie.id))
+    if(!document.getElementById(movie.id))
     {
-        // Check single movie data
-        movie = checkData(movie);
-    }
-    else
-    {
-        // check if movie data are null
-        movie = checkData(movie);
         bodyHTML.innerHTML +=
-        `<div \
-        id="${movie.id}"
-        class="modal">
-        \t<div 
-        class="modal__content"
-        id="${movie.id}__content">\n
-        \t\t<h1>${movie.title}</h1>
-        \t\t<p>Genre : ${movie.genres}</p>
-        \t\t<p>Date released : ${movie.date_published}</p>
-        \t\t<p>Rate : ${movie.rated}</p>
-        \t\t<p>IMDB Score : ${movie.imdb_score}</p>
-        \t\t<p>Directors : ${movie.directors}</p>
-        \t\t<p>Actors : ${movie.actors}</p>
-        \t\t<p>Duration : ${movie.duration} minutes</p>
-        \t\t<p>Countries : ${movie.countries}</p>
-        \t\t<p>Box office : ${movie.worldwide_gross_income}</p>
-        \t\t<p>Description : ${movie.description}</p>
-        \t\t<a href="#" class="modal__close">&times;</a>
-        \t</div>
-        </div>`;
+        `\t<div \
+        \tid="${movie.id}"
+        \tclass="modal">
+        \t\t<div 
+        \tclass="modal__content"
+        \tid="${movie.id}__content">\n
+        \t\t\t<h1>${movie.title}</h1>
+        \t\t\t<p>Genre : ${movie.genres}</p>
+        \t\t\t<p>Date released : ${movie.date_published}</p>
+        \t\t\t<p>Rate : ${movie.votes}</p>
+        \t\t\t<p>IMDB Score : ${movie.imdb_score}</p>
+        \t\t\t<p>Directors : ${movie.directors}</p>
+        \t\t\t<p>Actors : ${movie.actors}</p>
+        \t\t\t<p>Duration : ${movie.duration} minutes</p>
+        \t\t\t<p>Countries : ${movie.countries}</p>
+        \t\t\t<p>Box office : ${movie.worldwide_gross_income}</p>
+        \t\t\t<p>Description : ${movie.description}</p>
+        \t\t\t<a href="#" class="modal__close">&times;</a>
+        \t\t</div>
+        \t</div>\n`;
     }
 
     // // Set Image of modal__content as background
-    // modalContent = document.getElementById(`${movie.id}__content`);
-    // modalContent.style.backgroundImage = `url(${movie.image_url})`;
-    // modalContent.style.backgroundSize = "cover";
+    modalContent = document.getElementById(`${movie.id}__content`);
+    modalContent.style.backgroundImage = `url(${movie.image_url})`;
+    modalContent.style.backgroundSize = "cover";
 
     // return <div class="informations"> Content </div>
-    return `
-    <div class="informations">\
-        <a href="#${movie.id}" \
-        data-target="#${movie.id}" \
-        data-toggle="modal"> \
-            <img\
-            src=${movie.image_url} \
-            class="bigPoster" \
-            alt = "" \
-            >\
-        </a> \
-        <p class="title">${movie.title}</p>\
-            <div>\
-                <p class="desc">${movie.description}</p>\
-            </div>\
-    </div>
-            `; 
+    let firstMovie =
+    `
+    \t<a href="#${movie.id}" 
+    data-target="#${movie.id}" 
+    data-toggle="modal"> 
+    \t\t\t<img
+    src=${movie.image_url} 
+    class="bigPoster" 
+    alt = "" 
+    >
+    \t</a> 
+    \t<p class="title">${movie.title}</p>
+    \t\t<div>
+    \t\t\t<p class="desc">${movie.description}</p>
+    \t\t</div>`; 
+
+    return firstMovie
 }
 
 /**
@@ -279,7 +266,7 @@ async function getUrlBestMovie(url)
 /**
  * @returns HTML <div class="informations"> Content </div> that will be add to <div class="single-Movie"></div>
  */
-async function getBestMoviePoster()
+async function getBestMovie()
 {
     const urlImdb = url + "&sort_by=-imdb_score";
     const urlBestMovie = await getUrlBestMovie(urlImdb);
@@ -297,28 +284,23 @@ async function getBestMoviePoster()
 class SlideShow
 {
     /**
-     * 
-     * @param {String} name 
-     * @param {Array} listImages 
-     * @param {*} options 
+     * Constructor
+     * @param {String} name : Name of the HTML 
+     * @param {Array} listSlides : 
      */
-    constructor(name, listImages, options = {})
+    constructor(name, listSlides)
     {
         this.slide = document.querySelector(name);
-        // Default options:
-        this.options = Object.assign({}, 
-            {
-            slidesToScroll: 1
-            }, options)
+
         // Initials values:
         this.currentSlide = 0;
-        this.items = listImages.map((x) => x);
+        this.items = listSlides.map((x) => x);
         this.translation = 0
         this.widthMax = 440*this.items.length;
         this.widthPic = 440;
 
         // Transform listImages avoiding ",".
-        listImages = listImages.join(" ");
+        listSlides = listSlides.join(" ");
 
         // Divisions creation:
         this.base = this.createDivWithClass("carousel");
@@ -329,8 +311,7 @@ class SlideShow
         this.slide.appendChild(this.base);
 
         // Edition:
-        this.container.innerHTML = listImages;
-        
+        this.container.innerHTML = listSlides;
         
         //Add directional arrows:
         this.createArrow();
@@ -354,10 +335,10 @@ class SlideShow
      */
     nextSlide()
     {
+        // Calculs
         let zoomLevel = (window.devicePixelRatio);
         let ratio = this.widthPic - ((this.widthPic/this.items.length)*((window.innerWidth*zoomLevel)/this.widthMax));
         let numberSlideVisible = window.innerWidth/this.widthPic
-
         let pas = -this.translation/ratio
         let positionSlide = pas + numberSlideVisible;
         
@@ -410,32 +391,28 @@ class SlideShow
 async function start()
 {
     // Single movie Doc:
-    let movieBest = await getBestMoviePoster();
+    let movieBest = await getBestMovie();
     bestMovie.innerHTML = movieBest;
 
     // Categories Doc:
-    let movieCatBestMovies = await getPostersIndex("&sort_by=-imdb_score");
-    let movieCat1 = await getPostersIndex("&genre=Fantasy");
-    let movieCat2 = await getPostersIndex("&genre=Drama");
-    let movieCat3 = await getPostersIndex("&genre=Family");
+    let movieCatBestMovies = await getSlides("&sort_by=-imdb_score");
+    let movieCat1 = await getSlides("&genre=Fantasy");
+    let movieCat2 = await getSlides("&genre=Drama");
+    let movieCat3 = await getSlides("&genre=Family");
 
     // Carousels:
     createSlider("#bestMovies", movieCatBestMovies);
     createSlider("#cat1", movieCat1);
     createSlider("#cat2", movieCat2);
     createSlider("#cat3", movieCat3);
-
-
 }
 
 /**
  * 
  * @param {String} name : Name of the SQUELETON category.
- * @param {Array} listPictures : List of HTML pictures that belong to category.
+ * @param {Array} listSlides : List of slides that belong to category.
  */
-async function createSlider(name, listPictures){
-    new SlideShow(name, listPictures,
-    {
-        slidesToScroll: 1
-    })
+async function createSlider(name, listSlides){
+    console.log(listSlides);
+    new SlideShow(name, listSlides);
 }
