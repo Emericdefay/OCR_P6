@@ -28,35 +28,100 @@ start();
  * @param {String} url : Movie Title Detail's url from the *OCMovies API* RESTful API.
  * @returns HTML <div class="carousel__slide"> Content </div>
  */
+
+
+/**
+ * @param {String} text : The text to check
+ * @returns Return "Unknown" if text is null. Else return the text. 
+ */
+function checkNotNull(text)
+{
+    if(text === null)
+    {
+        text = "Unknown.";
+        return text;
+    }
+
+    return text;
+}
+
+/**
+ * 
+ * @param {Object} data : Data object to checkout.
+ * @returns Return the data after checking null is replace by "Unknown."
+ */
+function checkData(data)
+{
+    // check if data are null
+    data.id = checkNotNull(data.id);
+    data.title = checkNotNull(data.title);
+    data.genres = checkNotNull(data.genres);
+    data.year = checkNotNull(data.year);
+    data.votes = checkNotNull(data.votes);
+    data.imdb_score = checkNotNull(data.imdb_score);
+    data.directors = checkNotNull(data.directors);
+    data.actors = checkNotNull(data.actors);
+    data.duration = checkNotNull(data.duration);
+    data.countries = checkNotNull(data.countries);
+    data.worldwide_gross_income = checkNotNull(data.worldwide_gross_income);
+    data.description = checkNotNull(data.description);
+    data.image_url = checkNotNull(data.image_url);
+
+    return data;
+}
+
+/**
+ * 
+ * @param {String} url : Movie Title Detail's url from the *OCMovies API* RESTful API.
+ * @returns Element "carousel__slide"
+ */
 async function getInfo(url)
 {
     return await fetch(url)
     .then((res)=>res.json())
     .then((data)=>
-    {
-        let bodyHTML = document.querySelector(".modal");
-        bodyHTML.innerHTML +=
-        `<div \
-        id="${data.id}" \
-        class="modal">\
-            <div \
-            class="modal__content" \
-            style="background-image: url(${data.image_url});
-                background-size:cover;">\
-                <h1>${data.title}</h1>\
-                <p>Genre : ${data.genres}</p>\
-                <p>Date released : ${data.year}</p>\
-                <p>Rate : ${data.votes}</p>\
-                <p>IMDB Score : ${data.imdb_score}</p>\
-                <p>Directors : ${data.directors}</p>\
-                <p>Actors : ${data.actors}</p>\
-                <p>Duration : ${data.duration} minutes</p>\
-                <p>Countries : ${data.countries}</p>\
-                <p>Box office : ${data.worldwide_gross_income}</p>\
-                <p>Description : ${data.description}</p>\
-                <a href="#${null}" class="modal__close">&times;</a>\
-            </div>\
-        </div>`;
+    {   
+        let bodyHTML = document.querySelector(".modals");
+
+        if(document.getElementById(data.id))
+        {
+            // check if data are null
+            data = checkData(data);
+        }
+        else
+        {
+            // check if data are null
+            data = checkData(data);
+
+            bodyHTML.innerHTML += 
+            `
+            <div 
+            id="${data.id}" 
+            class="modal">
+            \t<div 
+            class="modal__content"
+            id="${data.id}__content">
+            \t\t<h1>${data.title}</h1>
+            \t\t<p>Genre : ${data.genres}</p>
+            \t\t<p>Date released : ${data.year}</p>
+            \t\t<p>Rate : ${data.votes}</p>
+            \t\t<p>IMDB Score : ${data.imdb_score}</p>
+            \t\t<p>Directors : ${data.directors}</p>
+            \t\t<p>Actors : ${data.actors}</p>
+            \t\t<p>Duration : ${data.duration} minutes</p>
+            \t\t<p>Countries : ${data.countries}</p>
+            \t\t<p>Box office : ${data.worldwide_gross_income}</p>
+            \t\t<p>Description : ${data.description}</p>
+            \t\t<a href="#${null}" class="modal__close">&times;</a>
+            \t</div>
+            </div>
+            `;  
+        }
+
+        //Set Image of modal__content as background
+        let idContent = `${data.id}__content`
+        document.getElementById(idContent).style.backgroundImage = `url(${data.image_url})`;
+        document.getElementById(idContent).style.backgroundSize = "cover";
 
         return `<div \
                 class="carousel__slide">\
@@ -65,7 +130,9 @@ async function getInfo(url)
                     data-toggle="modal">
                         <img \
                         src=${data.image_url} \
-                        class="poster"/>\
+                        class="poster"
+                        alt = "" \
+                        />\
                     </a>
                 </div>`;
     })
@@ -77,13 +144,10 @@ async function getInfo(url)
  */
 async function createMoviePoster(movies)
 {
-    return await movies.map((movie)=>
+    return await movies.map(async (movie)=>
         {
-            return getInfo(movie.url)
-            .then(data => 
-            {
-                return data;
-            })
+            let data = await getInfo(movie.url);
+            return data;
         })               
 }
 
@@ -98,7 +162,10 @@ async function getData(url, start, range)
 {
     return fetch(url)
                 .then((res) => res.json())
-                .then((data)=> createMoviePoster(data.results.slice(start, range)))
+                .then((data)=> {
+                                return createMoviePoster(data.results.slice(start, range));
+
+                                })
                 .then((prom)=>
                 {   
                     // Fusion of multiple promises.
@@ -114,11 +181,12 @@ async function getData(url, start, range)
 async function getPostersIndex(command)
 {
     let newUrl = url + command;
-    const data = await getData(newUrl, 0, 6);
+    let page = "&page=1"
+    const data = await getData(newUrl+page, 0, 5);
 
     // We want 7 movies per carousel.
-    newUrl += "&page=2";
-    const data2 = await getData(newUrl, 0, 2);
+    page = "&page=2";
+    const data2 = await getData(newUrl+page, 0, 1);
 
     return data.concat(data2);
 }
@@ -130,34 +198,51 @@ async function getPostersIndex(command)
  */
 function createMovieInfo(movie)
 {
-    // Add modal
-    let bodyHTML = document.querySelector(".modal");
-    bodyHTML.innerHTML +=
-    `
-    <div \
-    id="${movie.id}" \
-    class="modal">\
-        <div \
-        class="modal__content" \
-        style="background-image: url(${movie.image_url});
-                background-size:cover;">\
-            <h1>${movie.title}</h1>\
-            <p>Genre : ${movie.genres}</p>\
-            <p>Date released : ${movie.date_published}</p>\
-            <p>Rate : ${movie.rated}</p>\
-            <p>IMDB Score : ${movie.imdb_score}</p>\
-            <p>Directors : ${movie.directors}</p>\
-            <p>Actors : ${movie.actors}</p>\
-            <p>Duration : ${movie.duration} minutes</p>\
-            <p>Countries : ${movie.countries}</p>\
-            <p>Box office : ${movie.worldwide_gross_income}</p>\
-            <p>Description : ${movie.description}</p>\
-            <a href="#" class="modal__close">&times;</a>\
-        </div>\
-    </div>
-    `;
 
-    // <div class="informations"> Content </div>
+    // Check single movie data
+    movie = checkData(movie);
+
+    // Add modal
+    let bodyHTML = document.querySelector(".modals");
+
+    if(document.getElementById(movie.id))
+    {
+        // Check single movie data
+        movie = checkData(movie);
+    }
+    else
+    {
+        // check if movie data are null
+        movie = checkData(movie);
+        bodyHTML.innerHTML +=
+        `<div \
+        id="${movie.id}"
+        class="modal">
+        \t<div 
+        class="modal__content"
+        id="${movie.id}__content">\n
+        \t\t<h1>${movie.title}</h1>
+        \t\t<p>Genre : ${movie.genres}</p>
+        \t\t<p>Date released : ${movie.date_published}</p>
+        \t\t<p>Rate : ${movie.rated}</p>
+        \t\t<p>IMDB Score : ${movie.imdb_score}</p>
+        \t\t<p>Directors : ${movie.directors}</p>
+        \t\t<p>Actors : ${movie.actors}</p>
+        \t\t<p>Duration : ${movie.duration} minutes</p>
+        \t\t<p>Countries : ${movie.countries}</p>
+        \t\t<p>Box office : ${movie.worldwide_gross_income}</p>
+        \t\t<p>Description : ${movie.description}</p>
+        \t\t<a href="#" class="modal__close">&times;</a>
+        \t</div>
+        </div>`;
+    }
+
+    // // Set Image of modal__content as background
+    // modalContent = document.getElementById(`${movie.id}__content`);
+    // modalContent.style.backgroundImage = `url(${movie.image_url})`;
+    // modalContent.style.backgroundSize = "cover";
+
+    // return <div class="informations"> Content </div>
     return `
     <div class="informations">\
         <a href="#${movie.id}" \
@@ -166,6 +251,7 @@ function createMovieInfo(movie)
             <img\
             src=${movie.image_url} \
             class="bigPoster" \
+            alt = "" \
             >\
         </a> \
         <p class="title">${movie.title}</p>\
@@ -338,6 +424,8 @@ async function start()
     createSlider("#cat1", movieCat1);
     createSlider("#cat2", movieCat2);
     createSlider("#cat3", movieCat3);
+
+
 }
 
 /**
