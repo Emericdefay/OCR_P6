@@ -390,9 +390,9 @@ async function start()
 
     // Categories Doc:
     let movieCatBestMovies = await getSlides("&sort_by=-imdb_score");
-    let movieCat1 = await getSlides("&genre=Fantasy");
-    let movieCat2 = await getSlides("&genre=Drama");
-    let movieCat3 = await getSlides("&genre=Family");
+    let movieCat1 = await getSlides("&genre=Fantasy&sort_by=-imdb_score");
+    let movieCat2 = await getSlides("&genre=Drama&sort_by=-imdb_score");
+    let movieCat3 = await getSlides("&genre=Family&sort_by=-imdb_score");
 
     // Carousels:
     createCarousel("#bestMovies", movieCatBestMovies);
