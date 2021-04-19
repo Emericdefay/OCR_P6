@@ -78,12 +78,12 @@ body
     position: fixed;
     z-index: 100;
     visibility: hidden;
-    /*opacity: 0;*/
+    opacity: 0;
     background-color: #972e2e;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition:0.4s;
+    transition:$duration;
     top:0;
     right:0;
     bottom: 0;
@@ -92,7 +92,7 @@ body
 
     &:target
     {
-        transition: 2s;
+        transition: 200ms;
         z-index: 100;
         clear: both;
         visibility:visible;
@@ -152,7 +152,6 @@ body
     .title
     {
         transform: translate(-58%,50%);
-        
     }
 
     .desc
@@ -169,16 +168,6 @@ body
         position: relative;
         width: 60%;
         height: 60vh;
-    }
-
-    .category
-    {
-        float: right;
-        font-size: 10vh;
-        margin-right: 10vh;
-        transform: translate( 0%, -100%);
-        color: white;
-        
     }
 
     .button
@@ -240,16 +229,31 @@ body
 .list
 {
     clear: both;
-
-    p
+    
+    p.category
     {
-        .category
-        {
-            color: white;
-        }
+        transform: scale(1);
+        color: rgb(214, 214, 214);
+        transition: 500ms;
     }
 
+    &:hover > p.category
+    {
+        transform: scale(1.1);
+        color: rgb(255, 255, 255);
+        transition: 250ms;
+    }
 }
+
+// .list:hover
+// {
+//     transition: 100ms;
+// }
+
+// .list::after
+// {
+//     transition: 100ms;
+// }
 
 .carousel
 {

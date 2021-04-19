@@ -2,7 +2,7 @@
 const url = "http://localhost:8000/api/v1/titles/?";
 
 // Get bones of the initial index.html
-let bestMovie = document.querySelector("#bestMovie");
+let bestMovie = document.querySelector("#starMovie");
 let bestMovies = document.querySelector("#bestMovies");
 let cat1 = document.querySelector("#cat1");
 let cat2 = document.querySelector("#cat2");
@@ -109,8 +109,7 @@ async function getInfo(url)
         `\n\t\t\t\t<div
         class="carousel__slide">
         \t\t\t<a href="#${data.id}"
-        data-target="#${data.id}" 
-        data-toggle="modal">
+        data-target="#${data.id}">
         \t\t\t\t<img
         src=${data.image_url} 
         class="poster"
@@ -130,8 +129,7 @@ async function createMoviePoster(movies)
 {
     return await movies.map(async (movie)=>
         {
-            let data = await getInfo(movie.url);
-            return data;
+            return await getInfo(movie.url);
         })               
 }
 
@@ -146,10 +144,7 @@ async function getData(url, start, range)
 {
     return fetch(url)
                 .then((res) => res.json())
-                .then((data)=> {
-                                return createMoviePoster(data.results.slice(start, range));
-
-                                })
+                .then((data)=> createMoviePoster(data.results.slice(start, range)))
                 .then((prom)=>
                 {   
                     // Fusion of multiple promises.
@@ -231,14 +226,14 @@ function createMovieInfo(movie)
     // return <div class="informations"> Content </div>
     let firstMovie =
     `
-    \t\t\t<a href="#${movie.id}" 
-    data-target="#${movie.id}" 
-    data-toggle="modal"> 
-    \t\t\t\t<img
+    \t\t<div class="buttons">
+    \t\t\t<button onclick="location.href='#${movie.id}'" data-target="#${movie.id}" type="button" class="button" id="play"><span>Look </span></button>
+    \t\t</div>
+    \t\t<div class="presentation" id="bestMovie">
+    \t\t\t<img
     src=${movie.image_url} 
     class="bigPoster" 
     alt = "">
-    \t\t\t</a> 
     \t\t\t<p class="title">${movie.title}</p>
     \t\t\t<div>
     \t\t\t\t<p class="desc">${movie.description}</p>
@@ -268,6 +263,7 @@ async function getBestMovie()
 {
     const urlImdb = url + "&sort_by=-imdb_score";
     const urlBestMovie = await getUrlBestMovie(urlImdb);
+
     return fetch(urlBestMovie)
             .then((res)=>res.json())
             .then((data)=>
@@ -284,7 +280,7 @@ class Carousel
     /**
      * Constructor
      * @param {String} name : Name of the HTML 
-     * @param {Array} listSlides : List of Slides that'll be elements of the carousel
+     * @param {Array} listSlides : List of Slides that'll be elements of the Carousel
      */
     constructor(name, listSlides)
     {
@@ -371,7 +367,7 @@ class Carousel
     }
 
     /**
-     * Snippet to create <div> with a class
+     * Shortcut to create <div> with a class
      * @param {string} className : Name of the class for the div
      * @returns {HTMLElement}
      */
@@ -399,10 +395,10 @@ async function start()
     let movieCat3 = await getSlides("&genre=Family");
 
     // Carousels:
-    createSlider("#bestMovies", movieCatBestMovies);
-    createSlider("#cat1", movieCat1);
-    createSlider("#cat2", movieCat2);
-    createSlider("#cat3", movieCat3);
+    createCarousel("#bestMovies", movieCatBestMovies);
+    createCarousel("#cat1", movieCat1);
+    createCarousel("#cat2", movieCat2);
+    createCarousel("#cat3", movieCat3);
 }
 
 /**
@@ -410,6 +406,6 @@ async function start()
  * @param {String} name : Name of the SQUELETON category.
  * @param {Array} listSlides : List of slides that belong to category.
  */
-async function createSlider(name, listSlides){
+async function createCarousel(name, listSlides){
     new Carousel(name, listSlides);
 }

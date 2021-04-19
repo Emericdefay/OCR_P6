@@ -65,7 +65,7 @@ body p.category {
   position: fixed;
   z-index: 100;
   visibility: hidden;
-  /*opacity: 0;*/
+  opacity: 0;
   background-color: #972e2e;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -76,8 +76,8 @@ body p.category {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  -webkit-transition: 0.4s;
-  transition: 0.4s;
+  -webkit-transition: 250ms;
+  transition: 250ms;
   top: 0;
   right: 0;
   bottom: 0;
@@ -86,8 +86,8 @@ body p.category {
 }
 
 .modal:target {
-  -webkit-transition: 2s;
-  transition: 2s;
+  -webkit-transition: 200ms;
+  transition: 200ms;
   z-index: 100;
   clear: both;
   visibility: visible;
@@ -158,15 +158,6 @@ body p.category {
   height: 60vh;
 }
 
-.single-movie .category {
-  float: right;
-  font-size: 10vh;
-  margin-right: 10vh;
-  -webkit-transform: translate(0%, -100%);
-          transform: translate(0%, -100%);
-  color: white;
-}
-
 .single-movie .button {
   background: #262626;
   color: white;
@@ -225,8 +216,20 @@ body p.category {
   clear: both;
 }
 
-.list p .category {
+.list p.category {
+  -webkit-transform: scale(1);
+          transform: scale(1);
+  color: #d6d6d6;
+  -webkit-transition: 500ms;
+  transition: 500ms;
+}
+
+.list:hover > p.category {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
   color: white;
+  -webkit-transition: 250ms;
+  transition: 250ms;
 }
 
 .carousel {
