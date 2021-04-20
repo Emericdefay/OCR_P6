@@ -32,7 +32,7 @@ First:
 ```
 - A recent browser : Chrome, Mozilla, Opera, ...
 ```
-Second:
+Second:<br>
 Since this index communicate with a local API (in development) you need to setup this API.
 To do that: check this repository : <a href="https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR">OCMovies-API-EN-FR</a>.
 And follow the usage process.
